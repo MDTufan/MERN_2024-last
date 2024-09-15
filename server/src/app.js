@@ -2,16 +2,13 @@ const express= require("express");
 const app = express();
 const createError = require('http-errors')
 
-const morgan = require('morgan')
+const morgan = require('morgan');
+const { userRouter } = require("./Router/userRouter");
 
 //Midelwer.........
 
 app.use(morgan("dev"));
-
-app.get("/",(req,res)=>{
- res.send("welcone to the server");
-});
-
+app.use("/api/user",userRouter);
 
 
 app.use((req,res,next)=>{
@@ -22,9 +19,6 @@ app.use((req,res,next)=>{
 
 
 app.use((err, req, res, next) => {
-    // console.error(err.stack)
-    // res.status(500).send('Something broke!')
-
     return res.status(err.status || 500).json({
         sucess:false,
         message:err.message
