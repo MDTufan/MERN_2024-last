@@ -1,6 +1,7 @@
 const express= require("express");
 const app = express();
 const createError = require('http-errors')
+const bodyParser = require('body-parser')
 
 const morgan = require('morgan');
 const { userRouter } = require("./Router/userRouter");
@@ -8,6 +9,15 @@ const { userRouter } = require("./Router/userRouter");
 //Midelwer.........
 
 app.use(morgan("dev"));
+app.use(bodyParser.json());
+
+app.use(bodyParser.urlencoded({ extended:true }));
+
+
+
+
+
+
 app.use("/api/user",userRouter);
 
 
