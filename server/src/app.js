@@ -5,20 +5,18 @@ const bodyParser = require('body-parser')
 
 const morgan = require('morgan');
 const { userRouter } = require("./Router/userRouter");
+const { seedRoute } = require("./Router/seedRoute");
+const { errorRespon } = require("./ResponHandeler/responhandeler");
 
 //Midelwer.........
 
 app.use(morgan("dev"));
 app.use(bodyParser.json());
-
 app.use(bodyParser.urlencoded({ extended:true }));
 
 
-
-
-
-
 app.use("/api/user",userRouter);
+app.use("/api/seed",seedRoute);
 
 
 app.use((req,res,next)=>{
@@ -29,8 +27,10 @@ app.use((req,res,next)=>{
 
 
 app.use((err, req, res, next) => {
-    return res.status(err.status || 500).json({
-        sucess:false,
+   
+
+    return errorRespon(res,{
+        statuscode:err.status,
         message:err.message
     })
   })
