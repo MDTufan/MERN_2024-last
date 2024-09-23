@@ -8,6 +8,14 @@ const errorRespon = (res,{statuscode = 500, message= "internal server Problem"})
 
 
 }
+const successRespon = (res,{statuscode = 200, message= "success"})=>{
+   return res.status(statuscode).json({
+    success:true,
+    message:message
+   })
 
 
-module.exports={errorRespon};
+}
+
+
+module.exports={errorRespon,successRespon};
