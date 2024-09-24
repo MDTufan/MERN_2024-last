@@ -8,10 +8,11 @@ const errorRespon = (res,{statuscode = 500, message= "internal server Problem"})
 
 
 }
-const successRespon = (res,{statuscode = 200, message= "success"})=>{
+const successRespon = (res,{statuscode = 200, message= "success", payload={}})=>{
    return res.status(statuscode).json({
     success:true,
-    message:message
+    message:message,
+    payload
    })
 
 
