@@ -1,7 +1,8 @@
 const createError = require('http-errors')
 const { successRespon } = require("../ResponHandeler/responhandeler");
 const User = require("../model/userSchama");
-const { default: mongoose } = require('mongoose');
+
+const { findwithid } = require('../services/findwidthId');
 
 
 const getuser= async (req,res,next)=>{
@@ -59,10 +60,8 @@ const getuserId= async (req,res,next)=>{
      const id = req.params.id;
      const options={password:0};
 
-
-       const user = await User.findByIdAndDelete(id,options)  ;   
-      if(!user){throw createError(404,"No User Found")}
-       
+     const user = await findwithid(id,options)
+    
              
       return successRespon(res,{
          statuscode:202,
@@ -73,11 +72,7 @@ const getuserId= async (req,res,next)=>{
        })
      
      }catch(error){
-        if(error instanceof mongoose.Error){
-            next (createError(404,"Invalid User id"));
-            return;
-              
-          }
+      
          next(error)
      }
      
