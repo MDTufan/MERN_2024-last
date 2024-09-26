@@ -60,12 +60,12 @@ const getuserId= async (req,res,next)=>{
      const id = req.params.id;
      const options={password:0};
 
-     const user = await findwithid(id,options)
+     const user = await findwithid(User,id,options)
     
              
       return successRespon(res,{
          statuscode:202,
-         message:"User was delete successfull",
+         message:"User was return successfull",
          payload:{
             user
          }

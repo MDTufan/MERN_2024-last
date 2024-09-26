@@ -1,20 +1,20 @@
-const { default: mongoose } = require("mongoose");
+const { default: mongoose, model } = require("mongoose");
 const User = require("../model/userSchama");
 const createError = require('http-errors')
 
 
-const findwithid = async ( id,options={})=>{
+const findwithid = async (Model, id,options={})=>{
 try{
-    const user = await User.findByIdAndDelete(id,options); 
+    const item = await Model.findById(id,options); 
 
-      if(!user){throw createError(404,"No User Found")};
+      if(!item){throw createError(404,`${Model.modelName} do not exist width this id`)};
 
-      return user;
+      return item;
        
 }catch(error){
     if(error instanceof mongoose.Error){
         
-        throw (createError(404,"Invalid User id"));
+        throw (createError(404,"Invalid item id"));
        
           
       }
