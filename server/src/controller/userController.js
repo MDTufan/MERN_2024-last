@@ -1,5 +1,7 @@
+const createError = require('http-errors')
 const { successRespon } = require("../ResponHandeler/responhandeler");
 const User = require("../model/userSchama");
+const { default: mongoose } = require('mongoose');
 
 
 const getuser= async (req,res,next)=>{
@@ -52,5 +54,35 @@ const getuser= async (req,res,next)=>{
       
 }
 
+const getuserId= async (req,res,next)=>{
+    try{
+     const id = req.params.id;
+     const options={password:0};
 
-module.exports={getuser}
+
+       const user = await User.findByIdAndDelete(id,options)  ;   
+      if(!user){throw createError(404,"No User Found")}
+       
+             
+      return successRespon(res,{
+         statuscode:202,
+         message:"User was delete successfull",
+         payload:{
+            user
+         }
+       })
+     
+     }catch(error){
+        if(error instanceof mongoose.Error){
+            next (createError(404,"Invalid User id"));
+            return;
+              
+          }
+         next(error)
+     }
+     
+}
+
+
+
+module.exports={getuser,getuserId}
