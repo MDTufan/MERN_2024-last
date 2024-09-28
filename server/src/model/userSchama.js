@@ -35,7 +35,7 @@ const userSchema = new Schema({
         set:(v)=>bcrypt.hashSync(v,bcrypt.genSaltSync(10)),
         
     },
-    images:{
+    image:{
 
         type:String,
         default:defaultImagePath,
