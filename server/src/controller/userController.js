@@ -3,6 +3,7 @@ const { successRespon } = require("../ResponHandeler/responhandeler");
 const User = require("../model/userSchama");
 
 const { findwithid } = require('../services/findwidthId');
+const { deleteimages } = require('../helper/deleteimages');
 
 
 const getuser= async (req,res,next)=>{
@@ -78,6 +79,31 @@ const getuserId= async (req,res,next)=>{
      
 }
 
+const deletuser= async (req,res,next)=>{
+    try{
+     const id = req.params.id;
+     const options={password:0};
+
+     const user= await findwithid(User,id,options)
+    
+      const deleteimagePath = user.images;
+           deleteimages(deleteimagePath) 
+           
+           await User.findByIdAndDelete({_id:id,isAdmin:false});
+      return successRespon(res,{
+         statuscode:202,
+         message:"User was delete successfull",
+         payload:{
+            
+         }
+       })
+     
+     }catch(error){
+      
+         next(error)
+     }
+     
+}
 
 
-module.exports={getuser,getuserId}
+module.exports={getuser,getuserId,deletuser}
