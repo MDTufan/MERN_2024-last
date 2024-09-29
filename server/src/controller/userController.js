@@ -4,6 +4,10 @@ const User = require("../model/userSchama");
 
 const { findwithid } = require('../services/findwidthId');
 const { deleteimages } = require('../helper/deleteimages');
+const JsonWebToken = require('../helper/JsonWebToken');
+const { jwt_Key, clind_url } = require('../secret');
+const { sendEmailWidhtNodemiler } = require('../helper/email');
+
 
 
 const getuser= async (req,res,next)=>{
@@ -105,5 +109,53 @@ const deletuser= async (req,res,next)=>{
      
 }
 
+const getRegister= async (req,res,next)=>{
+    try{
 
-module.exports={getuser,getuserId,deletuser}
+        const {name,email,password,phone,address} = req.body;
+
+
+        const userExist = await User.exists({email:email});
+
+        if(userExist){
+            throw createError(409,'uaer email already exist.pleass singin...')
+        }
+        
+       
+        //jsonwebtoken
+        const token = JsonWebToken({name,email,password,phone,address},jwt_Key,'10m');
+
+
+        //eamildata
+        const EmaliData={
+            email,
+            subject:"Account Acctivion Email",
+            html:
+            `<h2>Hello ${name} !</h2>
+            <p> plase Click Here To <a href="${clind_url}/api/user/activte/${token}">acctive Your Account</a> </p>
+            `
+          }
+    
+          try{
+            await sendEmailWidhtNodemiler(EmaliData)
+           }catch(error){
+             next(createError(500,"send to Fild send email..."))
+             return;
+           }  
+      return successRespon(res,{
+         statuscode:202,
+         message:"User was create successfull",
+         payload:{
+            token
+         }
+       })
+     
+     }catch(error){
+      
+         next(error)
+     }
+     
+}
+
+
+module.exports={getuser,getuserId,deletuser,getRegister}

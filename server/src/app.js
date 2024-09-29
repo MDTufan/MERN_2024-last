@@ -19,14 +19,14 @@ app.use(bodyParser.urlencoded({ extended:true }));
 app.use("/api/user",userRouter);
 app.use("/api/seed",seedRoute);
 
-
+//clind error
 app.use((req,res,next)=>{
 
     next(createError(404,"Route not Found"));
  
 });
 
-
+//server error
 app.use((err, req, res, next) => {
    
 
