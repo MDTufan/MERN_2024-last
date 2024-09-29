@@ -1,6 +1,7 @@
 const createError = require('http-errors')
 const { successRespon } = require("../ResponHandeler/responhandeler");
 const User = require("../model/userSchama");
+const jwt = require('jsonwebtoken');
 
 const { findwithid } = require('../services/findwidthId');
 const { deleteimages } = require('../helper/deleteimages');
@@ -137,14 +138,14 @@ const getRegister= async (req,res,next)=>{
           }
     
           try{
-            await sendEmailWidhtNodemiler(EmaliData)
+            // await sendEmailWidhtNodemiler(EmaliData)
            }catch(error){
              next(createError(500,"send to Fild send email..."))
              return;
            }  
       return successRespon(res,{
          statuscode:202,
-         message:"User was create successfull",
+         message:` plase go to you ${email} for conpliting your register prossce`,
          payload:{
             token
          }
@@ -156,6 +157,46 @@ const getRegister= async (req,res,next)=>{
      }
      
 }
+const verifyRegister= async (req,res,next)=>{
+    try{
+
+        const token=req.body.token;
+         if(!token){
+          throw createError(409,"token not found")
+         }
+       try{
+        const decoded=jwt.verify(token,jwt_Key);
+        
+        if(!decoded){
+          throw createError(409,"jwt not verify");
+        }
+        const userExist = await User.exists({email:decoded.email});
+
+        if(userExist){
+            throw createError(409,'uaer email already exist.pleass singin...')
+        }
+        await User.create(decoded);
+      return successRespon(res,{
+         statuscode:201,
+         message:"User was create successfull",
+         
+       })
+       }catch(error){
+          if(error.name === 'TokenExpriedError'){
+            throw createError(401 ,'Token has expried');
+          }else if(error.name === 'JsonWebTokenError'){
+            throw createError(401 ,'invlied token');
+          }else{
+            throw error;
+          }
+       }
+     
+     }catch(error){
+      
+         next(error)
+     }
+     
+}
 
 
-module.exports={getuser,getuserId,deletuser,getRegister}
+module.exports={getuser,getuserId,deletuser,getRegister,verifyRegister}
