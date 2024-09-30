@@ -138,7 +138,7 @@ const getRegister= async (req,res,next)=>{
           }
     
           try{
-            // await sendEmailWidhtNodemiler(EmaliData)
+            // await sendEmailWidhtNodemiler(EmaliData);
            }catch(error){
              next(createError(500,"send to Fild send email..."))
              return;
@@ -170,11 +170,13 @@ const verifyRegister= async (req,res,next)=>{
         if(!decoded){
           throw createError(409,"jwt not verify");
         }
+
         const userExist = await User.exists({email:decoded.email});
 
         if(userExist){
             throw createError(409,'uaer email already exist.pleass singin...')
         }
+        
         await User.create(decoded);
       return successRespon(res,{
          statuscode:201,
