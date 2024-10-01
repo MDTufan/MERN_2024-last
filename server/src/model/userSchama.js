@@ -19,6 +19,7 @@ const userSchema = new Schema({
         trim:true,
         unique:true,
         lowercase:true,
+       
         validate: {
             validator: function(v) {
               return /^([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$)/.test(v);
@@ -31,7 +32,7 @@ const userSchema = new Schema({
         type:String,
         required:[true,"User name is Required"],
         trim:true,
-        
+        minlength:[6,"user name must be 6 chercect now"],
         set:(v)=>bcrypt.hashSync(v,bcrypt.genSaltSync(10)),
         
     },
@@ -47,7 +48,9 @@ const userSchema = new Schema({
     },
     phone:{
         type:String,
-        required:[true,"phone number is req..."]
+        required:[true,"phone number is req..."],
+        
+
     },
     isBand:{
         type:Boolean,
@@ -57,6 +60,7 @@ const userSchema = new Schema({
     address:{
          type:String,
          required:[true,"User Address is Required"],  
+         minlength:[3,"user name must be 6 chercect now"],
     },
 },{timestamps:true} );
 

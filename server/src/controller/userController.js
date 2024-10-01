@@ -94,7 +94,7 @@ const deletuser= async (req,res,next)=>{
       const deleteimagePath = user.image;
            deleteimages(deleteimagePath) 
            
-           await User.findByIdAndDelete({_id:id,isAdmin:false});
+      await User.findByIdAndDelete({_id:id,isAdmin:false});
       return successRespon(res,{
          statuscode:202,
          message:"User was delete successfull",

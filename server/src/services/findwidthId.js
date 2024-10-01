@@ -15,8 +15,7 @@ try{
     if(error instanceof mongoose.Error){
         
         throw (createError(404,"Invalid item id"));
-       
-          
+         
       }
       throw error
 }
