@@ -1,5 +1,6 @@
 
 const {body} = require('express-validator');
+const { Error } = require('mongoose');
 
 const validatorUserRegiater= [
     body('name')
@@ -31,8 +32,15 @@ const validatorUserRegiater= [
     .notEmpty()
     .withMessage("phone is Required"),
     body('image')
-    .optional()
-    .isString()
+    .custom((value,{req})=>{
+        if(!req.file || !req.file.buffer){
+            return new Error(" User image is Requried");
+
+        }
+        return true;
+    })
+    .withMessage("User image is Requried")
+    
     
     
     

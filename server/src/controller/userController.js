@@ -114,17 +114,20 @@ const getRegister= async (req,res,next)=>{
     try{
 
         const {name,email,password,phone,address} = req.body;
+        if(!req.file){
+          throw new Error ("file not allowerd.....")
+        }
+        const imageBufferString = req.file.buffer.toString('base64');
 
 
         const userExist = await User.exists({email:email});
-
-        if(userExist){
+         if(userExist){
             throw createError(409,'uaer email already exist.pleass singin...')
         }
         
        
         //jsonwebtoken
-        const token = JsonWebToken({name,email,password,phone,address},jwt_Key,'10m');
+        const token = JsonWebToken({name,email,password,phone,address,image:imageBufferString},jwt_Key,'10m');
 
 
         //eamildata
@@ -147,7 +150,8 @@ const getRegister= async (req,res,next)=>{
          statuscode:202,
          message:` plase go to you ${email} for conpliting your register prossce`,
          payload:{
-            token
+            token,
+            imageBufferString,
          }
        })
      
