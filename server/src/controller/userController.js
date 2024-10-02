@@ -8,6 +8,7 @@ const { deleteimages } = require('../helper/deleteimages');
 const JsonWebToken = require('../helper/JsonWebToken');
 const { jwt_Key, clind_url } = require('../secret');
 const { sendEmailWidhtNodemiler } = require('../helper/email');
+const { runValidator } = require('../validators');
 
 
 
@@ -114,10 +115,19 @@ const getRegister= async (req,res,next)=>{
     try{
 
         const {name,email,password,phone,address} = req.body;
-        if(!req.file){
+        
+        const image=req.file;
+
+        if(!image){
           throw new Error ("file not allowerd.....")
         }
-        const imageBufferString = req.file.buffer.toString('base64');
+        if(image.size > 1024*1024*2){
+          throw new Error (" image file is to be large.it must be less 2MB")
+        }
+
+
+
+        const imageBufferString = image.buffer.toString('base64');
 
 
         const userExist = await User.exists({email:email});
@@ -205,4 +215,67 @@ const verifyRegister= async (req,res,next)=>{
 }
 
 
-module.exports={getuser,getuserId,deletuser,getRegister,verifyRegister}
+const updateUserId= async (req,res,next)=>{
+  try{
+   const id = req.params.id;
+   const options={password:0};
+   const useroptions={new:true,runValidators:true,context:"query"};
+   const updates={};
+
+   await findwithid(User,id,options);
+
+
+  //  if(req.body.name){
+  //   updates.name=req.body.name;
+  //  }
+   
+  //  if(req.body.password){
+  //   updates.password=req.body.password;
+  //  }
+  //  if(req.body.address){
+  //   updates.address=req.body.address;
+  //  }
+  //  if(req.body.phone){
+  //   updates.phone=req.body.phone;
+  //  }
+
+   
+   // ============================
+    for(let key in req.body){
+      if(['name','password','address','phone'].includes(key)){
+        updates[key]=req.body[key];
+      }
+    }
+
+   // ============================
+
+   const image=req.file;
+
+    if(image){
+      if(image.size > 1024*1024*2){
+        throw new Error (" image file is to be large.it must be less 2MB");
+      }
+      updates.image=image.buffer.toString("base64");
+    }
+
+  
+   const updateUser = await User.findByIdAndUpdate(id,updates,useroptions);
+    if(!updateUser){
+      throw new Error (" usr");
+    }
+    return successRespon(res,{
+       statuscode:202,
+       message:"User was update successfull",
+       payload:{
+          updateUser
+       }
+     })
+   
+   }catch(error){
+    
+       next(error)
+   }
+   
+}
+
+module.exports={getuser,getuserId,deletuser,getRegister,verifyRegister,updateUserId}
