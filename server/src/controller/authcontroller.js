@@ -58,6 +58,29 @@ const handellogin = async(req,res,next)=>{
    
 
 }
+const handellogout = async(req,res,next)=>{
+
+ 
+        try{
 
 
-module.exports={handellogin}
+            res.clearCookie("Access_token");
+       
+          return successRespon(res,{
+             statuscode:200,
+             message:"User LogOut successfull",
+             payload:{
+                
+             }
+           })
+         
+         }catch(error){
+             next(error)
+         }
+         
+   
+
+}
+
+
+module.exports={handellogin,handellogout}
