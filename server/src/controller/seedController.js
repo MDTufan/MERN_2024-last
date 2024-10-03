@@ -5,6 +5,7 @@ const User = require("../model/userSchama");
 const getSeedUser= async (req,res,next)=>{
     
     try{
+        
         await User.deleteMany({});
 
         const user = await User.insertMany(data.users);

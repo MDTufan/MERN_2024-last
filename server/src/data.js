@@ -7,6 +7,7 @@ const data={
             password:"123456789",
             phone:"01609038004",
             address:"dhaka,bangladesh",
+            image:"../publice/image/users/40.JPG"
 
         },
         {
@@ -15,6 +16,7 @@ const data={
             password:"1875433246",
             phone:"33344223",
             address:"joypurhat,bangladesh",
+             image:"../publice/image/users/40.JPG"
         },
         {
             name:"Jannatun Ferdusi",
@@ -22,6 +24,7 @@ const data={
             password:"1875433246",
             phone:"33344223",
             address:"joypurhat,bangladesh",
+             image:"../publice/image/users/40.JPG"
         },
         {
             name:" Ferdusi",
@@ -29,6 +32,7 @@ const data={
             password:"1875433246",
             phone:"33344223",
             address:"joypurhat,bangladesh",
+             image:"../publice/image/users/40.JPG"
         },
         {
             name:"toli Ferdusi",
@@ -36,6 +40,7 @@ const data={
             password:"1875433246",
             phone:"33344223",
             address:"joypurhat,bangladesh",
+             image:"../publice/image/users/40.JPG"
         },
         {
             name:"ma toli Ferdusi",
@@ -43,6 +48,7 @@ const data={
             password:"1875433246",
             phone:"33344223",
             address:"joypurhat,bangladesh",
+             image:"../publice/image/users/40.JPG"
         },
     ]    
         

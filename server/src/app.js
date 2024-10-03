@@ -1,4 +1,5 @@
 const express= require("express");
+var cookieParser = require('cookie-parser')
 const app = express();
 const createError = require('http-errors')
 const bodyParser = require('body-parser')
@@ -7,17 +8,21 @@ const morgan = require('morgan');
 const { userRouter } = require("./Router/userRouter");
 const { seedRoute } = require("./Router/seedRoute");
 const { errorRespon } = require("./ResponHandeler/responhandeler");
+const { authRouter } = require("./Router/authRouter");
 
 //Midelwer.........
 
 app.use(morgan("dev"));
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:true }));
 
 
 // all Router .....
 app.use("/api/user",userRouter);
+
 app.use("/api/seed",seedRoute);
+app.use("/api/auth",authRouter);
 
 
 
