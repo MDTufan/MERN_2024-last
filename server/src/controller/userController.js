@@ -64,7 +64,8 @@ const getuser= async (req,res,next)=>{
 
 const getuserId= async (req,res,next)=>{
     try{
-     const id = req.params.id;
+
+    const id = req.params.id;
      const options={password:0};
 
      const user = await findwithid(User,id,options)
@@ -261,7 +262,7 @@ const updateUserId= async (req,res,next)=>{
   
    const updateUser = await User.findByIdAndUpdate(id,updates,useroptions);
     if(!updateUser){
-      throw new Error (" usr");
+      throw new Error (" user dose't update");
     }
     return successRespon(res,{
        statuscode:202,

@@ -4,19 +4,21 @@ const { getuser, getuserId, deletuser, getRegister, verifyRegister, updateUserId
 const upload = require("../middleware/uploadFile");
 const { validatorUserRegiater } = require("../validators/auth");
 const { runValidator } = require("../validators");
+const { isLogedIn, isLogedOut, isAdmin } = require("../middleware/auth");
 const userRouter =express.Router();
 
 
 userRouter.post("/register",
    upload.single('image'),
+   isLogedOut,
    validatorUserRegiater,
    runValidator,
   getRegister);
-userRouter.post("/verify",verifyRegister);
-userRouter.get("/",getuser);
-userRouter.get("/:id",getuserId);
-userRouter.delete("/:id",deletuser);
-userRouter.put("/:id", upload.single('image'),updateUserId);
+userRouter.post("/verify",isLogedOut,verifyRegister);
+userRouter.get("/", isLogedIn,isAdmin,getuser);
+userRouter.get("/:id",isLogedIn, getuserId);
+userRouter.delete("/:id",isLogedIn,deletuser);
+userRouter.put("/:id", upload.single('image'),isLogedIn,updateUserId);
    
 
 

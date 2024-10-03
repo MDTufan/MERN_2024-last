@@ -11,7 +11,7 @@ const defaultImagePath= process.env.dufalt_image_path || "../publice/image/users
 
 
 const jwt_Key=process.env.jwt_Key || "gyrfdffttyhh#hjj$%#677645";
-const ACCESS_TOKEN=process.env.ACCESS_TOKEN || "hiugyshjjsggs5s4435yubvz%$$budyyh*&&&";
+const ACCESS_TOKEN_KEY=process.env.ACCESS_TOKEN || "hiugyshjjsggs5s4435yubvz%$$budyyh*&&&";
 
 const smtp_username=process.env.SMTP_USERNAME;
 const smtp_password=process.env.SMTP_PASSWORD;
@@ -20,4 +20,4 @@ const clind_url=process.env.clind_url || 'http://localhost:3000';
 
 
 
-module.exports={SERVER_PORT,mongobd_url,defaultImagePath,jwt_Key,smtp_username,smtp_password,clind_url,ACCESS_TOKEN};
+module.exports={SERVER_PORT,mongobd_url,defaultImagePath,jwt_Key,smtp_username,smtp_password,clind_url,ACCESS_TOKEN_KEY};
