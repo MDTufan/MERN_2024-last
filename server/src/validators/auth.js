@@ -19,8 +19,10 @@ const validatorUserRegiater= [
     .trim()
     .notEmpty()
     .withMessage("User password is Required")
-    .isLength({min:4})
-    .withMessage("password shoud be at last 4 charaecter long"),
+    .isLength({min:6})
+    .withMessage("password shoud be at last 6 charaecter long")
+    .matches(/^(?:(?=.*\d)(?=.*[a-z])(?=.*[@$!%*?&])(?=.*[A-Z]).*)$/)
+    .withMessage("password should be at last 1 uppercase letter,1 lowercase letter, 1 number and one special carecter."),
     body('address')
     .trim()
     .notEmpty()
@@ -46,6 +48,39 @@ const validatorUserRegiater= [
     
     
 ]
+const validatorUserLogin= [
+ 
+    body('email')
+    .trim()
+    .notEmpty()
+    .withMessage("User Email is Required")
+    .isEmail()
+    .withMessage("invlied email"),
+    body('password')
+    .trim()
+    .notEmpty()
+    .withMessage("User password is Required")
+    .isLength({min:6})
+    .withMessage("password shoud be at last 6 charaecter long")
+    .matches(/^(?:(?=.*\d)(?=.*[a-z])(?=.*[@$!%*?&])(?=.*[A-Z]).*)$/)
+    .withMessage("password should be at last 1 uppercase letter,1 lowercase letter, 1 number and one special carecter.")
+   
+    
+]
+const validatorUserUpdate= [
+ 
+   
+    body('password')
+    .trim()
+    .notEmpty()
+    .withMessage("User password is Required")
+    .isLength({min:6})
+    .withMessage("password shoud be at last 6 charaecter long")
+    .matches(/^(?:(?=.*\d)(?=.*[a-z])(?=.*[@$!%*?&])(?=.*[A-Z]).*)$/)
+    .withMessage("password should be at last 1 uppercase letter,1 lowercase letter, 1 number and one special carecter.")
+   
+    
+]
 
 
-module.exports={validatorUserRegiater}
+module.exports={validatorUserRegiater,validatorUserLogin,validatorUserUpdate}

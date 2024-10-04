@@ -35,12 +35,16 @@ const handellogin = async(req,res,next)=>{
             //    secure:true,
                sameSite:'none',
            })
+
+           const widthoutpassword = await User.findOne({email}).select("-password");
+
+
                  
           return successRespon(res,{
              statuscode:200,
              message:"User were Return successfull",
              payload:{
-                 user
+              widthoutpassword
              }
            })
          
