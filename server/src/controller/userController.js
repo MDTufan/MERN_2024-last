@@ -214,8 +214,6 @@ const verifyRegister= async (req,res,next)=>{
      }
      
 }
-
-
 const updateUserId= async (req,res,next)=>{
   try{
    const id = req.params.id;
@@ -279,4 +277,58 @@ const updateUserId= async (req,res,next)=>{
    
 }
 
-module.exports={getuser,getuserId,deletuser,getRegister,verifyRegister,updateUserId}
+
+
+const banUserId= async (req,res,next)=>{
+  try{
+   const id = req.params.id;
+   const banUser={isBand:true};
+   await findwithid(User,id);
+   const useroptions={new:true,runValidators:true,context:"query"};
+   
+  
+   const updateUser = await User.findByIdAndUpdate(id,banUser,useroptions).select("-password");
+    if(!updateUser){
+      throw new Error (" user dose not Banned.");
+    }
+    return successRespon(res,{
+       statuscode:202,
+       message:"User was Banned successfull",
+       payload:{
+          updateUser
+       }
+     })
+   
+   }catch(error){
+    
+       next(error)
+   }
+   
+}
+const unbanUserId= async (req,res,next)=>{
+  try{
+   const id = req.params.id;
+   const banUser={isBand:false};
+   await findwithid(User,id);
+   const useroptions={new:true,runValidators:true,context:"query"};
+   
+  
+   const updateUser = await User.findByIdAndUpdate(id,banUser,useroptions).select("-password");
+    if(!updateUser){
+      throw new Error (" user dose not UnBanned.");
+    }
+    return successRespon(res,{
+       statuscode:202,
+       message:"User was UnBanned successfull",
+       payload:{
+          updateUser
+       }
+     })
+   
+   }catch(error){
+    
+       next(error)
+   }
+   
+}
+module.exports={getuser,getuserId,deletuser,getRegister,verifyRegister,updateUserId,banUserId,unbanUserId}
