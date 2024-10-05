@@ -7,7 +7,7 @@ const { runValidator } = require("../validators");
 const { isLogedIn, isLogedOut, isAdmin } = require("../middleware/auth");
 const userRouter =express.Router();
 
-
+// postuser
 userRouter.post("/register",
    upload.single('image'),
    isLogedOut,
@@ -15,11 +15,15 @@ userRouter.post("/register",
    runValidator,
   getRegister);
 userRouter.post("/verify",isLogedOut,verifyRegister);
+// getuser
 userRouter.get("/", isLogedIn,isAdmin,getuser);
 userRouter.get("/:id",isLogedIn, getuserId);
+// delet user
 userRouter.delete("/:id",isLogedIn,deletuser);
+// update user
 userRouter.put("/:id", upload.single('image'),isLogedIn,validatorUserUpdate,runValidator, updateUserId);
 
+// ban&unban User
 userRouter.put("/ban/:id", isLogedIn, isAdmin, banUserId);
 userRouter.put("/unban/:id", isLogedIn, isAdmin, unbanUserId);
    
