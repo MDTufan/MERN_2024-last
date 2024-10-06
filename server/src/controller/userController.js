@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs');
 const { findwithid } = require('../services/findwidthId');
 const { deleteimages } = require('../helper/deleteimages');
 const JsonWebToken = require('../helper/JsonWebToken');
-const { jwt_Key, clind_url } = require('../secret');
+const { jwt_Key, clind_url, forget_Password } = require('../secret');
 const { sendEmailWidhtNodemiler } = require('../helper/email');
 const { runValidator } = require('../validators');
 
@@ -284,24 +284,19 @@ const updatePassword= async (req,res,next)=>{
     const {oldPassword,newPassword}=req.body;
 
     const userid = req.params.id;
-
-
-   const user = await findwithid(User,userid);
+    const user = await findwithid(User,userid);
     
-   const passwordMach = await bcrypt.compare(oldPassword,user.password);
+    const passwordMach = await bcrypt.compare(oldPassword,user.password);
       if(!passwordMach){
         throw createError(404,"User old password dose not exisit .");
       }
 
-
-  
-
-  
    const updateUser = await User.findByIdAndUpdate(
     userid,
     {password:newPassword},
     {new:true}
   ).select("-password");
+  
     if(!updateUser){
       throw new Error (" user password dose't update");
     }
@@ -318,6 +313,51 @@ const updatePassword= async (req,res,next)=>{
        next(error)
    }
    
+}
+const forgetPassword= async (req,res,next)=>{
+
+
+    try {
+      const {email}=req.body;
+      const userData = await User.findOne({email:email});
+
+          if(!userData){
+            throw createError(404,"your email is Increcet.you have to not verify email address. plase register fast")
+          }
+         //jsonwebtoken
+         const token = JsonWebToken({email},forget_Password,'10m');
+
+
+         //eamildata
+         const EmaliData={
+             email,
+             subject:" Reset password Email",
+             html:
+             `<h2>Hello ${userData.name} !</h2>
+             <p> plase Click Here To <a href="${clind_url}/api/user/reset/${token}">Reset password.</a> </p>
+             `
+           }
+     
+           try{
+             await sendEmailWidhtNodemiler(EmaliData);
+            }catch(error){
+              next(createError(500,"send to Fild send email..."))
+              return;
+            }  
+       return successRespon(res,{
+          statuscode:202,
+          message:` plase go to you ${email} for conpliting your Reset password`,
+          payload:{
+             token 
+          }
+        })
+
+
+    } catch (error) {
+      next(error)
+    }
+    
+  
 }
 
 const banUserId= async (req,res,next)=>{
@@ -372,4 +412,4 @@ const unbanUserId= async (req,res,next)=>{
    }
    
 }
-module.exports={getuser,getuserId,deletuser,getRegister,verifyRegister,updateUserId,banUserId,unbanUserId,updatePassword}
+module.exports={getuser,getuserId,deletuser,getRegister,verifyRegister,updateUserId,banUserId,unbanUserId,updatePassword,forgetPassword}

@@ -116,4 +116,17 @@ const validatorupdatePassword= [
    
     
 ]
-module.exports={validatorUserRegiater,validatorUserLogin,validatorUserUpdate,validatorupdatePassword}
+
+const validatorForgetPassword= [
+ 
+    body('email')
+    .trim()
+    .notEmpty()
+    .withMessage("User Email is Required")
+    .isEmail()
+    .withMessage("invlied email"),
+   
+   
+    
+]
+module.exports={validatorUserRegiater,validatorUserLogin,validatorUserUpdate,validatorupdatePassword,validatorForgetPassword}

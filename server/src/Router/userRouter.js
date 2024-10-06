@@ -1,8 +1,8 @@
 
 const express = require ("express");
-const { getuser, getuserId, deletuser, getRegister, verifyRegister, updateUserId, banUserId, unbanUserId, updatePassword } = require("../controller/userController");
+const { getuser, getuserId, deletuser, getRegister, verifyRegister, updateUserId, banUserId, unbanUserId, updatePassword, forgetPassword } = require("../controller/userController");
 const upload = require("../middleware/uploadFile");
-const { validatorUserRegiater, validatorUserUpdate, validatorupdatePassword } = require("../validators/auth");
+const { validatorUserRegiater, validatorUserUpdate, validatorupdatePassword, validatorForgetPassword } = require("../validators/auth");
 const { runValidator } = require("../validators");
 const { isLogedIn, isLogedOut, isAdmin } = require("../middleware/auth");
 const userRouter =express.Router();
@@ -25,6 +25,8 @@ userRouter.put("/:id", upload.single('image'),isLogedIn,validatorUserUpdate,runV
 
 // password Update
 userRouter.put("/updatePassword/:id", validatorupdatePassword,runValidator, isLogedIn, updatePassword);
+// Forget Update
+userRouter.post("/forgetPassword", validatorForgetPassword,runValidator,  forgetPassword);
 
 
 // ban&unban User
