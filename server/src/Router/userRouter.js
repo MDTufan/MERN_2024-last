@@ -1,8 +1,8 @@
 
 const express = require ("express");
-const { getuser, getuserId, deletuser, getRegister, verifyRegister, updateUserId, banUserId, unbanUserId, updatePassword, forgetPassword } = require("../controller/userController");
+const { getuser, getuserId, deletuser, getRegister, verifyRegister, updateUserId, banUserId, unbanUserId, updatePassword, forgetPassword, resetPassword } = require("../controller/userController");
 const upload = require("../middleware/uploadFile");
-const { validatorUserRegiater, validatorUserUpdate, validatorupdatePassword, validatorForgetPassword } = require("../validators/auth");
+const { validatorUserRegiater, validatorUserUpdate, validatorupdatePassword, validatorForgetPassword, validatorresetPassword } = require("../validators/auth");
 const { runValidator } = require("../validators");
 const { isLogedIn, isLogedOut, isAdmin } = require("../middleware/auth");
 const userRouter =express.Router();
@@ -20,13 +20,17 @@ userRouter.get("/", isLogedIn,isAdmin,getuser);
 userRouter.get("/:id",isLogedIn, getuserId);
 // delet user
 userRouter.delete("/:id",isLogedIn,deletuser);
+
+userRouter.put("/resetPassword", validatorresetPassword,runValidator,  resetPassword);
 // update user
 userRouter.put("/:id", upload.single('image'),isLogedIn,validatorUserUpdate,runValidator, updateUserId);
 
 // password Update
 userRouter.put("/updatePassword/:id", validatorupdatePassword,runValidator, isLogedIn, updatePassword);
 // Forget Update
+
 userRouter.post("/forgetPassword", validatorForgetPassword,runValidator,  forgetPassword);
+
 
 
 // ban&unban User

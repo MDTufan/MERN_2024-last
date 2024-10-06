@@ -359,6 +359,50 @@ const forgetPassword= async (req,res,next)=>{
     
   
 }
+const resetPassword= async (req,res,next)=>{
+
+
+    try {
+     
+        const {token,password}=req.body;
+
+
+        const decoded=jwt.verify(token,forget_Password);
+        
+        if(!decoded){
+          throw createError(409,"invalied your token expired.");
+        }
+
+        const filter={email:decoded.email};
+        const update={password:password};
+        const option={new:true}
+
+        const updateUser = await User.findOneAndUpdate(
+          filter,
+          update,
+          option
+        ).select("-password");
+        
+          if(!updateUser){
+            throw new Error (" user password dose't update");
+          }
+
+
+       return successRespon(res,{
+          statuscode:200,
+          message:'password reset successfuly',
+          payload:{
+             updateUser
+          }
+        })
+
+
+    } catch (error) {
+      next(error)
+    }
+    
+  
+}
 
 const banUserId= async (req,res,next)=>{
   try{
@@ -412,4 +456,4 @@ const unbanUserId= async (req,res,next)=>{
    }
    
 }
-module.exports={getuser,getuserId,deletuser,getRegister,verifyRegister,updateUserId,banUserId,unbanUserId,updatePassword,forgetPassword}
+module.exports={getuser,getuserId,deletuser,getRegister,verifyRegister,updateUserId,banUserId,unbanUserId,updatePassword,forgetPassword,resetPassword}

@@ -129,4 +129,23 @@ const validatorForgetPassword= [
    
     
 ]
-module.exports={validatorUserRegiater,validatorUserLogin,validatorUserUpdate,validatorupdatePassword,validatorForgetPassword}
+const validatorresetPassword= [
+ 
+    body('token')
+    .trim()
+    .notEmpty()
+    .withMessage("Token is Required"),
+    body('password')
+    .trim()
+    .notEmpty()
+    .withMessage("Reset password is Required")
+    .isLength({min:6})
+    .withMessage("Reset password shoud be at last 6 charaecter long")
+    .matches(/^(?:(?=.*\d)(?=.*[a-z])(?=.*[@$!%*?&])(?=.*[A-Z]).*)$/)
+    .withMessage("Reset password should be at last 1 uppercase letter,1 lowercase letter, 1 number and one special carecter.")
+    
+   
+   
+    
+]
+module.exports={validatorUserRegiater,validatorUserLogin,validatorUserUpdate,validatorupdatePassword,validatorForgetPassword,validatorresetPassword}
