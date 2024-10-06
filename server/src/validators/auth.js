@@ -2,6 +2,7 @@
 const {body} = require('express-validator');
 const { Error } = require('mongoose');
 
+
 const validatorUserRegiater= [
     body('name')
     .trim()
@@ -48,6 +49,22 @@ const validatorUserRegiater= [
     
     
 ]
+
+const validatorUserUpdate= [
+ 
+   
+    body('password')
+    .trim()
+    .notEmpty()
+    .withMessage("User password is Required")
+    .isLength({min:6})
+    .withMessage("password shoud be at last 6 charaecter long")
+    .matches(/^(?:(?=.*\d)(?=.*[a-z])(?=.*[@$!%*?&])(?=.*[A-Z]).*)$/)
+    .withMessage("password should be at last 1 uppercase letter,1 lowercase letter, 1 number and one special carecter.")
+   
+    
+]
+
 const validatorUserLogin= [
  
     body('email')
@@ -67,20 +84,36 @@ const validatorUserLogin= [
    
     
 ]
-const validatorUserUpdate= [
+
+
+const validatorupdatePassword= [
  
    
-    body('password')
+    body('oldPassword')
     .trim()
     .notEmpty()
-    .withMessage("User password is Required")
+    .withMessage("User old password is Required")
     .isLength({min:6})
-    .withMessage("password shoud be at last 6 charaecter long")
+    .withMessage("old password shoud be at last 6 charaecter long")
     .matches(/^(?:(?=.*\d)(?=.*[a-z])(?=.*[@$!%*?&])(?=.*[A-Z]).*)$/)
-    .withMessage("password should be at last 1 uppercase letter,1 lowercase letter, 1 number and one special carecter.")
+    .withMessage("old password should be at last 1 uppercase letter,1 lowercase letter, 1 number and one special carecter."),
+    body('newPassword')
+    .trim()
+    .notEmpty()
+    .withMessage("User new password is Required")
+    .isLength({min:6})
+    .withMessage("new password shoud be at last 6 charaecter long")
+    .matches(/^(?:(?=.*\d)(?=.*[a-z])(?=.*[@$!%*?&])(?=.*[A-Z]).*)$/)
+    .withMessage("new password should be at last 1 uppercase letter,1 lowercase letter, 1 number and one special carecter."),
+
+    body('confirmedPassword').custom((value,{req})=>{
+        if( value !== req.body.newPassword){
+           throw new Error("confirmed password did not match.")
+        }
+        return true;
+    })
+   
    
     
 ]
-
-
-module.exports={validatorUserRegiater,validatorUserLogin,validatorUserUpdate}
+module.exports={validatorUserRegiater,validatorUserLogin,validatorUserUpdate,validatorupdatePassword}

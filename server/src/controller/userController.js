@@ -2,6 +2,7 @@ const createError = require('http-errors')
 const { successRespon } = require("../ResponHandeler/responhandeler");
 const User = require("../model/userSchama");
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 const { findwithid } = require('../services/findwidthId');
 const { deleteimages } = require('../helper/deleteimages');
@@ -277,7 +278,47 @@ const updateUserId= async (req,res,next)=>{
    
 }
 
+const updatePassword= async (req,res,next)=>{
+  try{
 
+    const {oldPassword,newPassword}=req.body;
+
+    const userid = req.params.id;
+
+
+   const user = await findwithid(User,userid);
+    
+   const passwordMach = await bcrypt.compare(oldPassword,user.password);
+      if(!passwordMach){
+        throw createError(404,"User old password dose not exisit .");
+      }
+
+
+  
+
+  
+   const updateUser = await User.findByIdAndUpdate(
+    userid,
+    {password:newPassword},
+    {new:true}
+  ).select("-password");
+    if(!updateUser){
+      throw new Error (" user password dose't update");
+    }
+    return successRespon(res,{
+       statuscode:202,
+       message:"User password update successfull",
+       payload:{
+          user
+       }
+     })
+   
+   }catch(error){
+    
+       next(error)
+   }
+   
+}
 
 const banUserId= async (req,res,next)=>{
   try{
@@ -331,4 +372,4 @@ const unbanUserId= async (req,res,next)=>{
    }
    
 }
-module.exports={getuser,getuserId,deletuser,getRegister,verifyRegister,updateUserId,banUserId,unbanUserId}
+module.exports={getuser,getuserId,deletuser,getRegister,verifyRegister,updateUserId,banUserId,unbanUserId,updatePassword}
