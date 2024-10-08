@@ -7,9 +7,11 @@ const bcrypt = require('bcryptjs');
 const { findwithid } = require('../services/findwidthId');
 const { deleteimages } = require('../helper/deleteimages');
 const JsonWebToken = require('../helper/JsonWebToken');
-const { jwt_Key, clind_url, forget_Password } = require('../secret');
+const { jwt_Key, clind_url, forget_Password, forget_Password_KEY } = require('../secret');
 const { sendEmailWidhtNodemiler } = require('../helper/email');
 const { runValidator } = require('../validators');
+const { cheackUserExisit } = require('../helper/cheackUserExisit');
+const sendEmail = require('../helper/sendEmail');
 
 
 
@@ -39,7 +41,7 @@ const getuser= async (req,res,next)=>{
       
           const count = await User.find(filter).countDocuments();
       
-          if(!users) throw createError(404,"No User Found");
+          if(!users || users.length === 0) throw createError(404,"No User Found");
       
               
        return successRespon(res,{
@@ -131,8 +133,9 @@ const getRegister= async (req,res,next)=>{
 
         const imageBufferString = image.buffer.toString('base64');
 
+        // const  userExist =await User.exists({email:email});
 
-        const userExist = await User.exists({email:email});
+        const userExist = await cheackUserExisit(email);
          if(userExist){
             throw createError(409,'uaer email already exist.pleass singin...')
         }
@@ -152,18 +155,21 @@ const getRegister= async (req,res,next)=>{
             `
           }
     
-          try{
-            // await sendEmailWidhtNodemiler(EmaliData);
-           }catch(error){
-             next(createError(500,"send to Fild send email..."))
-             return;
-           }  
+          // try{
+          //   await sendEmailWidhtNodemiler(EmaliData);
+          //  }catch(error){
+          //    next(createError(500,"send to Fild send email..."))
+          //    return;
+          //  }  
+      
+          sendEmail(EmaliData);
+
       return successRespon(res,{
          statuscode:202,
          message:` plase go to you ${email} for conpliting your register prossce`,
          payload:{
-            token,
-            imageBufferString,
+            // token,
+            // imageBufferString,
          }
        })
      
@@ -241,9 +247,13 @@ const updateUserId= async (req,res,next)=>{
 
    
    // ============================
-    for(let key in req.body){
-      if(['name','password','address','phone'].includes(key)){
+
+   const allowerfield=['name','password','address','phone'];
+    for(const key in req.body){
+      if(allowerfield.includes(key)){
         updates[key]=req.body[key];
+      }else if (key == email){
+        throw new Error ("email can not be update")
       }
     }
 
@@ -338,12 +348,15 @@ const forgetPassword= async (req,res,next)=>{
              `
            }
      
-           try{
-             await sendEmailWidhtNodemiler(EmaliData);
-            }catch(error){
-              next(createError(500,"send to Fild send email..."))
-              return;
-            }  
+          //  try{
+          //    await sendEmailWidhtNodemiler(EmaliData);
+          //   }catch(error){
+          //     next(createError(500,"send to Fild send email..."))
+          //     return;
+          //   }  
+
+          sendEmail(EmaliData);
+          
        return successRespon(res,{
           statuscode:202,
           message:` plase go to you ${email} for conpliting your Reset password`,
@@ -367,7 +380,7 @@ const resetPassword= async (req,res,next)=>{
         const {token,password}=req.body;
 
 
-        const decoded=jwt.verify(token,forget_Password);
+        const decoded=jwt.verify(token,forget_Password_KEY);
         
         if(!decoded){
           throw createError(409,"invalied your token expired.");
@@ -456,4 +469,15 @@ const unbanUserId= async (req,res,next)=>{
    }
    
 }
-module.exports={getuser,getuserId,deletuser,getRegister,verifyRegister,updateUserId,banUserId,unbanUserId,updatePassword,forgetPassword,resetPassword}
+module.exports={
+  getuser,
+  getuserId,
+  deletuser,
+  getRegister,
+  verifyRegister,
+  updateUserId,
+  banUserId,
+  unbanUserId,
+  updatePassword,
+  forgetPassword,
+  resetPassword}

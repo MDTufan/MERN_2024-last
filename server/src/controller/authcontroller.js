@@ -1,9 +1,12 @@
 const createError = require('http-errors')
+
 const User = require("../model/userSchama");
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const { successRespon } = require('../ResponHandeler/responhandeler');
 const JsonWebToken = require('../helper/JsonWebToken');
 const { ACCESS_TOKEN_KEY } = require('../secret');
+const { setAccesstoken, setRefreshtoken } = require('../helper/allCookies');
 
 
 
@@ -27,16 +30,30 @@ const handellogin = async(req,res,next)=>{
             throw createError(404,"you are Band.plase contact authority.");
             }
 
-           const access_token = JsonWebToken({user},ACCESS_TOKEN_KEY,'15m');
+           const access_token = JsonWebToken({user},ACCESS_TOKEN_KEY,'5m');
 
-           res.cookie('Access_token',access_token,{
-               maxAge: 15 * 60 * 1000,
-               httpOnly:true,
-            //    secure:true,
-               sameSite:'none',
-           })
+          //  res.cookie('Access_token',access_token,{
+          //      maxAge: 5 * 60 * 1000,
+          //      httpOnly:true,
+          //   //    secure:true,
+          //      sameSite:'none',
+          //  });
+            setAccesstoken(res,access_token);
 
-           const widthoutpassword = await User.findOne({email}).select("-password");
+           const refreshtoken = JsonWebToken({user},ACCESS_TOKEN_KEY,'7d');
+
+          //  res.cookie('refreshtoken',refreshtoken,{
+          //      maxAge: 7 * 24 * 60 * 60 * 1000,
+          //      httpOnly:true,
+          //   //    secure:true,
+          //      sameSite:'none',
+          //  })
+          setRefreshtoken(res,refreshtoken);
+
+
+
+           const widthoutpassword = user.toObject();
+           delete widthoutpassword.password;
 
 
                  
@@ -61,8 +78,8 @@ const handellogout = async(req,res,next)=>{
         try{
 
 
-            res.clearCookie("Access_token");
-       
+          res.clearCookie("Access_token");
+          res.clearCookie("refreshtoken");
           return successRespon(res,{
              statuscode:200,
              message:"User LogOut successfull",
@@ -79,5 +96,77 @@ const handellogout = async(req,res,next)=>{
 
 }
 
+const handelrefreshtoken = async(req,res,next)=>{
 
-module.exports={handellogin,handellogout}
+ 
+  try{
+
+
+      const oldRefreshToken=req.cookies.refreshtoken;
+      console.log("hhhhhhhhh");
+      const decoded = jwt.verify(oldRefreshToken,ACCESS_TOKEN_KEY);
+      
+        if(!decoded){
+          throw createError(409,"invalied refresh token.");
+        }
+        
+        
+        const access_token = JsonWebToken(decoded.user,ACCESS_TOKEN_KEY,'5m');
+
+           res.cookie('Access_token',access_token,{
+               maxAge: 5 * 60 * 1000,
+               httpOnly:true,
+            //    secure:true,
+               sameSite:'none',
+           });
+
+
+    return successRespon(res,{
+       statuscode:200,
+       message:"Create new Refresh Token successfull",
+       payload:{
+          
+       }
+     })
+   
+   }catch(error){
+       next(error)
+   }
+   
+
+
+}
+const handelprotectedRoute = async(req,res,next)=>{
+
+ 
+  try{
+
+
+      const accesstoken=req.cookies.Access_token;
+
+      const decoded=jwt.verify(accesstoken,ACCESS_TOKEN_KEY);
+        
+        if(!decoded){
+          throw createError(409,"invalied refresh token.please login.");
+        }
+        
+       
+
+
+    return successRespon(res,{
+       statuscode:200,
+       message:"Create new Refresh Token verify successfull",
+       payload:{
+          
+       }
+     })
+   
+   }catch(error){
+       next(error)
+   }
+   
+
+
+}
+
+module.exports={handellogin,handellogout,handelrefreshtoken,handelprotectedRoute}
