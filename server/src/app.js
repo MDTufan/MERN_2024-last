@@ -9,9 +9,13 @@ const { userRouter } = require("./Router/userRouter");
 const { seedRoute } = require("./Router/seedRoute");
 const { errorRespon } = require("./ResponHandeler/responhandeler");
 const { authRouter } = require("./Router/authRouter");
+const { categoryRoute } = require("./Router/categoryRouter");
 
 //Midelwer.........
 
+
+// Middleware to parse JSON
+app.use(express.json());
 app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -23,6 +27,7 @@ app.use("/api/user",userRouter);
 
 app.use("/api/seed",seedRoute);
 app.use("/api/auth",authRouter);
+app.use("/api/categories",categoryRoute);
 
 
 

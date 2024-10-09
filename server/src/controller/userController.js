@@ -162,7 +162,7 @@ const getRegister= async (req,res,next)=>{
           //    return;
           //  }  
       
-          sendEmail(EmaliData);
+          await sendEmail(EmaliData);
 
       return successRespon(res,{
          statuscode:202,
@@ -355,7 +355,7 @@ const forgetPassword= async (req,res,next)=>{
           //     return;
           //   }  
 
-          sendEmail(EmaliData);
+        await  sendEmail(EmaliData);
           
        return successRespon(res,{
           statuscode:202,

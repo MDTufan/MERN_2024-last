@@ -103,7 +103,7 @@ const handelrefreshtoken = async(req,res,next)=>{
 
 
       const oldRefreshToken=req.cookies.refreshtoken;
-      console.log("hhhhhhhhh");
+     
       const decoded = jwt.verify(oldRefreshToken,ACCESS_TOKEN_KEY);
       
         if(!decoded){
@@ -113,12 +113,14 @@ const handelrefreshtoken = async(req,res,next)=>{
         
         const access_token = JsonWebToken(decoded.user,ACCESS_TOKEN_KEY,'5m');
 
-           res.cookie('Access_token',access_token,{
-               maxAge: 5 * 60 * 1000,
-               httpOnly:true,
-            //    secure:true,
-               sameSite:'none',
-           });
+          //  res.cookie('Access_token',access_token,{
+          //      maxAge: 5 * 60 * 1000,
+          //      httpOnly:true,
+          //   //    secure:true,
+          //      sameSite:'none',
+          //  });
+
+          setAccesstoken(res,access_token);
 
 
     return successRespon(res,{
