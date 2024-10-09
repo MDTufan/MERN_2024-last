@@ -1,7 +1,7 @@
 const createError = require('http-errors')
 
 const { successRespon } = require("../ResponHandeler/responhandeler");
-const { categoryCreate, getCategory, singleCategory, updateCategory } = require("../services/categoryService");
+const { categoryCreate, getCategory, singleCategory, updateCategory, deleteCategory } = require("../services/categoryService");
 
 
 
@@ -85,6 +85,27 @@ const hendleUpdateCategory= async(req,res,next)=>{
     }
 
 }
+const hendledeleteCategory= async(req,res,next)=>{
 
-module.exports={hendleCategory,hendleGetCategory,hendleSingleCategory,hendleUpdateCategory}
+    try {
+            
+            const {slug} =req.params;   
+           
+     const deleteSlug = await deleteCategory(slug);
+
+        if(!deleteSlug){
+            throw createError(404 ,"category not delete ")
+        }
+        return successRespon(res,{
+            statuscode:202,
+            message:"Category was Delete successfull",
+            payload:{deleteSlug},
+        })
+    } catch (error) {
+        next(error)
+    }
+
+}
+
+module.exports={hendleCategory,hendleGetCategory,hendleSingleCategory,hendleUpdateCategory,hendledeleteCategory}
     
