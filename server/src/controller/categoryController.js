@@ -1,7 +1,7 @@
+const createError = require('http-errors')
 
-const Category = require("../model/categorySchama");
 const { successRespon } = require("../ResponHandeler/responhandeler");
-const { categoryCreate, getCategory, singleCategory } = require("../services/categoryService");
+const { categoryCreate, getCategory, singleCategory, updateCategory } = require("../services/categoryService");
 
 
 
@@ -49,7 +49,8 @@ const hendleSingleCategory= async(req,res,next)=>{
 
     try {
            
-      const {slug} =req.params;   
+      const {slug} =req.params;  
+
      const Categorysingle = await singleCategory(slug);
 
         return successRespon(res,{
@@ -63,6 +64,27 @@ const hendleSingleCategory= async(req,res,next)=>{
 
 }
 
+const hendleUpdateCategory= async(req,res,next)=>{
 
-module.exports={hendleCategory,hendleGetCategory,hendleSingleCategory}
+    try {
+            const {name} = req.body;
+            const {slug} =req.params;   
+           
+     const update= await updateCategory(name,slug);
+
+        if(!update){
+            throw createError(404 ,"category not found ")
+        }
+        return successRespon(res,{
+            statuscode:202,
+            message:"Category update successfull",
+            payload:{update},
+        })
+    } catch (error) {
+        next(error)
+    }
+
+}
+
+module.exports={hendleCategory,hendleGetCategory,hendleSingleCategory,hendleUpdateCategory}
     
