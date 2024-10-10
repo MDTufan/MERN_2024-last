@@ -54,20 +54,19 @@ const productSchema = new Schema({
        
         
     },
-    sold:{
-        type:Number,
-        required:[true,"product sold is Required"],
-        trim:true,
-        default:0,
-        validate:{
-            validator:(v)=> v > 0,
-            message:(props)=>
-                `${props.value} is not a valid sold. qsold must be greater then 0.`
+    // sold:{
+    //     type:Number,
+      
+    //     trim:true,
+    //     default:0,
+    //     validate:{
+    //         validator:(v)=> v > 0,
+    //         message:(props)=>
+    //             `${props.value} is not a valid sold. sold must be greater then 0.`
             
-        }
-       
-        
-    },
+    //     }
+     
+    // },
     shipping:{
         type:Number,
         default:0,

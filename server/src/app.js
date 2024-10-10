@@ -10,6 +10,7 @@ const { seedRoute } = require("./Router/seedRoute");
 const { errorRespon } = require("./ResponHandeler/responhandeler");
 const { authRouter } = require("./Router/authRouter");
 const { categoryRoute } = require("./Router/categoryRouter");
+const { productRouter } = require("./Router/productRoter");
 
 //Midelwer.........
 
@@ -28,6 +29,7 @@ app.use("/api/user",userRouter);
 app.use("/api/seed",seedRoute);
 app.use("/api/auth",authRouter);
 app.use("/api/categories",categoryRoute);
+app.use("/api/product",productRouter);
 
 
 
