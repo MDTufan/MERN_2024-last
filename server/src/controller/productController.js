@@ -1,8 +1,8 @@
 const createError = require('http-errors')
 const Products = require("../model/productModel");
-const slugify = require('slugify');
+
 const { successRespon } = require('../ResponHandeler/responhandeler');
-const { ProductCreate } = require('../services/productService');
+const { ProductCreate, getProducts } = require('../services/productService');
 
 
 const createProduct = async(req,res,next)=>{
@@ -50,5 +50,36 @@ const createProduct = async(req,res,next)=>{
      }
      
 }
+const getAllProduct = async(req,res,next)=>{
+    try{
+      const page = parseInt(req.query.page) || 1 ;
+      const limit= parseInt(req.query.limit) || 4 ;
+     
+     const productsdata = await getProducts(page,limit);
 
-module.exports={createProduct}
+      return successRespon(res,{
+         statuscode:202,
+         message:'Get All product was successfully',
+         payload:{
+            Product:productsdata.Product,
+            pagination:{
+              
+              totalpage:Math.ceil(productsdata.count / limit),
+              ccurrentpage: page,
+              previouspage: page - 1 ,
+              nextpage: page + 1 ,
+              tolalNumberOfProducts:productsdata.count,
+   
+          }
+
+         }
+       })
+     
+     }catch(error){
+      
+         next(error)
+     }
+     
+}
+
+module.exports={createProduct,getAllProduct}

@@ -26,6 +26,21 @@ const ProductCreate = async (productData)=>{
   return Product;
 }
 
+const getProducts = async (page=1,limit=4)=>{
+     
+    const Product = await Products.find({})
+    .populate("category")
+    .limit(limit)
+    .skip((page-1)*limit)
+    .sort({createdAt: -1})
+
+    if(!Product){
+      throw createError(404,"Product not Found")
+    }
+    const count = await Products.find({}).countDocuments();
+
+   return {Product,count} ;
+}
 
 
-module.exports={ProductCreate }
+module.exports={ProductCreate,getProducts }
