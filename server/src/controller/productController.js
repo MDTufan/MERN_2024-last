@@ -2,7 +2,7 @@ const createError = require('http-errors')
 const Products = require("../model/productModel");
 
 const { successRespon } = require('../ResponHandeler/responhandeler');
-const { ProductCreate, getProducts } = require('../services/productService');
+const { ProductCreate, getProducts, getsingleproduct } = require('../services/productService');
 
 
 const createProduct = async(req,res,next)=>{
@@ -81,5 +81,27 @@ const getAllProduct = async(req,res,next)=>{
      }
      
 }
+const getsingleProduct = async(req,res,next)=>{
+    try{
+      
+      const {slug} =req.params;  
 
-module.exports={createProduct,getAllProduct}
+      const singleProduct =await getsingleproduct(slug);
+      return successRespon(res,{
+         statuscode:202,
+         message:'single product was successfully',
+         payload:{
+            singleProduct,
+            
+         }
+       })
+     
+     }catch(error){
+      
+         next(error)
+     }
+     
+}
+
+
+module.exports={createProduct,getAllProduct,getsingleProduct}
