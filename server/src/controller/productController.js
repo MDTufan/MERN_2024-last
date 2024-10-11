@@ -53,10 +53,22 @@ const createProduct = async(req,res,next)=>{
 }
 const getAllProduct = async(req,res,next)=>{
     try{
+      const search = req.query.search || "" ;
       const page = parseInt(req.query.page) || 1 ;
       const limit= parseInt(req.query.limit) || 4 ;
-     
-     const productsdata = await getProducts(page,limit);
+
+      const searchRegx= new RegExp('.*' + search + '.*',"i" );
+      
+      
+      
+       const filter = {
+              $or: [
+                  {name:{$regex:searchRegx}},
+                  
+              ],
+          };
+         
+     const productsdata = await getProducts(page,limit,filter);
 
       return successRespon(res,{
          statuscode:202,

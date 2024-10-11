@@ -1,7 +1,7 @@
 
 const{Schema,model, }=require("mongoose");
 const bcrypt = require('bcryptjs');
-// const { defaultImagePath } = require("../secret");
+const { defaultImagePath } = require("../secret");
 
 
 
@@ -41,6 +41,8 @@ const userSchema = new Schema({
         type:Buffer,
         contentType:String,
         required:[true,"image file is required..."],
+        // type:String,
+        // default:defaultImagePath,
        
         
     },
