@@ -1,8 +1,9 @@
 const createError = require('http-errors')
 const Products = require("../model/productModel");
+const slugify = require('slugify');
 
 const { successRespon } = require('../ResponHandeler/responhandeler');
-const { ProductCreate, getProducts, getsingleproduct } = require('../services/productService');
+const { ProductCreate, getProducts, getsingleproduct, deleteproducts } = require('../services/productService');
 
 
 const createProduct = async(req,res,next)=>{
@@ -102,6 +103,94 @@ const getsingleProduct = async(req,res,next)=>{
      }
      
 }
+const deleteProduct = async(req,res,next)=>{
+    try{
+      
+      const {slug} =req.params;  
+
+      await deleteproducts(slug);
+      return successRespon(res,{
+         statuscode:202,
+         message:' product was Delete successfully',
+        
+       })
+     
+     }catch(error){
+      
+         next(error)
+     }
+     
+}
+const updateProduct = async(req,res,next)=>{
+  try{
+    const {slug}= req.params;
+    
+    const useroptions={new:true,runValidators:true,context:"query"};
+    const updates={};
+ 
+    // await findwithid(User,id,options);
+ 
+ 
+   //  if(req.body.name){
+   //   updates.name=req.body.name;
+   //  }
+    
+   //  if(req.body.password){
+   //   updates.password=req.body.password;
+   //  }
+   //  if(req.body.address){
+   //   updates.address=req.body.address;
+   //  }
+   //  if(req.body.phone){
+   //   updates.phone=req.body.phone;
+   //  }
+ 
+    
+    // ============================
+ 
+    const allowerfield=['name','description','price','quantity','shipping','category'];
+    
+     for(const key in req.body){
+       if(allowerfield.includes(key)){
+         updates[key]=req.body[key];
+       }
+     }
+ 
+    // ============================
+
+    if(updates.name){
+        updates.slug=slugify(updates.name );
+       }
+     
+    const image=req.file;
+ 
+     if(image){
+       if(image.size > 1024*1024*2){
+         throw new Error (" image file is to be large.it must be less 2MB");
+       }
+       updates.image=image.buffer.toString("base64");
+     }
+ 
+   
+    const updateproduct = await Products.findOneAndUpdate({slug},updates,useroptions);
+     if(!updateproduct){
+       throw new Error (" user dose't update");
+     }
+     return successRespon(res,{
+        statuscode:202,
+        message:"product was update successfull",
+        payload:{
+           updateproduct
+        }
+      })
+    
+    }catch(error){
+     
+        next(error)
+    }
+    
+     
+}
 
 
-module.exports={createProduct,getAllProduct,getsingleProduct}
+module.exports={createProduct,getAllProduct,getsingleProduct,deleteProduct,updateProduct}

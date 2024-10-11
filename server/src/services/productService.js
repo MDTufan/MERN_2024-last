@@ -50,5 +50,13 @@ const getsingleproduct = async (slug)=>{
   }
    return singleProduct ;
 }
+const deleteproducts = async (slug)=>{
+     
+  const deletetProduct = await Products.findOneAndDelete({slug});
+  if(!deletetProduct){
+    throw createError(404,"  Product not delete")
+  }
+   return deletetProduct ;
+}
 
-module.exports={ProductCreate,getProducts,getsingleproduct }
+module.exports={ProductCreate,getProducts,getsingleproduct,deleteproducts }
