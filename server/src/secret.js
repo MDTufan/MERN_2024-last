@@ -3,11 +3,12 @@ require('dotenv').config();
 
 
 
+
 const SERVER_PORT = process.env.SERVER_PORT;
 
 const mongobd_url=process.env.mongobd_url || 'mongodb://localhost:27017/MERN_123';
 
-const defaultImagePath= process.env.dufalt_image_path || "../publice/image/users/35.JPG";
+const defaultImagePath= process.env.dufalt_image_path || "../publice/image/users/default.png";
 
 
 const jwt_Key=process.env.jwt_Key || "gyrfdffttyhh#hjj$%#677645";

@@ -35,14 +35,9 @@ const validatorUserRegiater= [
     .notEmpty()
     .withMessage("phone is Required"),
     body('image')
-    .custom((value,{req})=>{
-        if(!req.file || !req.file.buffer){
-            return new Error(" User image is Requried");
-
-        }
-        return true;
-    })
-    .withMessage("User image is Requried")
+    .optional()
+    .isString()
+    .withMessage("User image is optional"),
     
     
     

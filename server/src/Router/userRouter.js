@@ -10,10 +10,11 @@ const { isLogedIn, isLogedOut, isAdmin } = require("../middleware/auth");
 
 // postuser
 userRouter.post("/register",
+  
    upload.single('image'),
-   isLogedOut,
    validatorUserRegiater,
    runValidator,
+   isLogedOut,
   getRegister);
 userRouter.post("/verify",isLogedOut,verifyRegister);
 // getuser
@@ -24,7 +25,7 @@ userRouter.delete("/:id([0-9a-fA-F]{24})",isLogedIn,deletuser);
 
 userRouter.put("/resetPassword", validatorresetPassword,runValidator,  resetPassword);
 // update user
-userRouter.put("/:id([0-9a-fA-F]{24})", upload.single('image'),isLogedIn,validatorUserUpdate,runValidator, updateUserId);
+userRouter.put("/:id([0-9a-fA-F]{24})",isLogedIn, upload.single('image'), updateUserId);
 
 // password Update
 userRouter.put("/updatePassword/:id([0-9a-fA-F]{24})", validatorupdatePassword,runValidator, isLogedIn, updatePassword);

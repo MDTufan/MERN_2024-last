@@ -3,6 +3,7 @@ const { successRespon } = require("../ResponHandeler/responhandeler");
 const User = require("../model/userSchama");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const path = require('path');
 
 const { findwithid } = require('../services/findwidthId');
 const { deleteimages } = require('../helper/deleteimages');
@@ -100,6 +101,10 @@ const deletuser= async (req,res,next)=>{
       //      deleteimages(deleteimagePath) 
            
       await User.findByIdAndDelete({_id:id,isAdmin:false});
+
+      if(user && user.image){
+        await deleteimages(user.image);
+      }
       return successRespon(res,{
          statuscode:202,
          message:"User was delete successfull",
@@ -120,18 +125,18 @@ const getRegister= async (req,res,next)=>{
 
         const {name,email,password,phone,address} = req.body;
         
-        const image=req.file;
+        const image = req.file?.path;
 
-        if(!image){
-          throw new Error ("file not allowerd.....")
-        }
-        if(image.size > 1024*1024*2){
+        // if(!image){
+        //   throw new Error ("file not allowerd.....")
+        // }
+        if(image && image.size > 1024 * 1024 * 2){
           throw new Error (" image file is to be large.it must be less 2MB")
         }
 
 
 
-        const imageBufferString = image.buffer.toString('base64');
+        // const imageBufferString = image.buffer.toString('base64');
 
         // const  userExist =await User.exists({email:email});
 
@@ -139,10 +144,21 @@ const getRegister= async (req,res,next)=>{
          if(userExist){
             throw createError(409,'uaer email already exist.pleass singin...')
         }
-        
+        const tokenpaload={
+          name,
+          email,
+          password,
+          phone,
+          address,
+
+          if(image){
+            tokenpaload.image=image;
+          }
+          
+        }
        
         //jsonwebtoken
-        const token = JsonWebToken({name,email,password,phone,address,image:imageBufferString},jwt_Key,'10m');
+        const token = JsonWebToken(tokenpaload,jwt_Key,'10m');
 
 
         //eamildata
@@ -162,13 +178,13 @@ const getRegister= async (req,res,next)=>{
           //    return;
           //  }  
       
-          await sendEmail(EmaliData);
+          // await sendEmail(EmaliData);
 
       return successRespon(res,{
          statuscode:202,
          message:` plase go to you ${email} for conpliting your register prossce`,
          payload:{
-            // token,
+            token,
             // imageBufferString,
          }
        })
@@ -225,10 +241,13 @@ const updateUserId= async (req,res,next)=>{
   try{
    const id = req.params.id;
    const options={password:0};
+   const user = await findwithid(User,id,options);
+
    const useroptions={new:true,runValidators:true,context:"query"};
+
    const updates={};
 
-   await findwithid(User,id,options);
+  
 
 
   //  if(req.body.name){
@@ -259,13 +278,16 @@ const updateUserId= async (req,res,next)=>{
 
    // ============================
 
-   const image=req.file;
-
+   const image = req.file.path;
+  
     if(image){
-      if(image.size > 1024*1024*2){
+      if(image.size > 1024 * 1024 * 2){
         throw new Error (" image file is to be large.it must be less 2MB");
       }
-      updates.image=image.buffer.toString("base64");
+      updates.image = image;
+     
+      user.image === "default.png" && deleteimages(user.image);
+      
     }
 
   

@@ -10,7 +10,7 @@ const userSchema = new Schema({
         type:String,
         required:[true,"User name is Required"],
         trim:true,
-        minlength:[6,"user name must be 6 chercect now"],
+        minlength:[3,"user name must be 6 chercect now"],
         maxlength:[31,"user name must be 31  chercect now"],
     },
     email:{
@@ -38,11 +38,11 @@ const userSchema = new Schema({
     },
     image:{
 
-        type:Buffer,
-        contentType:String,
-        required:[true,"image file is required..."],
-        // type:String,
-        // default:defaultImagePath,
+        // type:Buffer,
+        // contentType:String,
+        // required:[true,"image file is required..."],
+        type:String,
+        default:defaultImagePath,
        
         
     },

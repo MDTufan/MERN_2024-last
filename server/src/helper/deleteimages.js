@@ -1,12 +1,14 @@
 
 
-const fs=require("fs").promises;
+const fs = require("fs/promises");
 
-const deleteimages= async(deleteimagePath )=>{
+const deleteimages= async(imagePath)=>{
         
     try{
-        await fs.access(deleteimagePath );
-        await fs.unlink(deleteimagePath );
+        console.log("ttttttt");
+        
+        await fs.access(imagePath);
+        await fs.unlink(imagePath);
         console.log("images  delete successfull");
 
     }catch(error){
