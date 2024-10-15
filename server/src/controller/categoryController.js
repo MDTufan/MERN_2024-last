@@ -53,6 +53,9 @@ const hendleSingleCategory= async(req,res,next)=>{
 
      const Categorysingle = await singleCategory(slug);
 
+        // if(!Categorysingle){
+        //     throw createError(404,"single category not found")
+        // }
         return successRespon(res,{
             statuscode:202,
             message:"Category Fatch successfull",

@@ -151,12 +151,12 @@ const getRegister= async (req,res,next)=>{
           phone,
           address,
 
-          if(image){
-            tokenpaload.image=image;
-          }
-          
+         
         }
-       
+        if(image){
+          tokenpaload.image=image;
+        }
+        
         //jsonwebtoken
         const token = JsonWebToken(tokenpaload,jwt_Key,'10m');
 
@@ -215,12 +215,13 @@ const verifyRegister= async (req,res,next)=>{
             throw createError(409,'uaer email already exist.pleass singin...')
         }
         
-        await User.create(decoded);
-      return successRespon(res,{
-         statuscode:201,
-         message:"User was create successfull",
+            await User.create(decoded);
+            return successRespon(res,{
+            statuscode:201,
+            message:"User was create successfull",
          
        })
+       
        }catch(error){
           if(error.name === 'TokenExpriedError'){
             throw createError(401 ,'Token has expried');
@@ -286,12 +287,13 @@ const updateUserId= async (req,res,next)=>{
       }
       updates.image = image;
      
-      user.image === "default.png" && deleteimages(user.image);
+      user.image !== "default.png" && deleteimages(user.image);
       
     }
 
   
    const updateUser = await User.findByIdAndUpdate(id,updates,useroptions);
+
     if(!updateUser){
       throw new Error (" user dose't update");
     }

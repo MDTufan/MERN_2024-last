@@ -4,7 +4,7 @@ const slugify = require('slugify');
 const categoryCreate = async (name)=>{
     const newCategory= await Category.create({
         name: name,
-        slug: slugify(name.toString()),
+        slug: slugify(name),
     });
     return newCategory;
 }
